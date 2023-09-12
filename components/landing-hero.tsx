@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
     const {isSignedIn}=useAuth();
 
      return(
-        <div className="text-white text-center font-bold py-36 space-y-4">
+        <div className="text-white text-center font-bold py-40 space-y-4">
             <div className="text-4xl sm:text-5xl md:text-6xl  lg:text-7xl font-extrabold space-y-5 ">
                 <h1>
                     The Best AI Tool for
@@ -32,7 +32,7 @@ import { Button } from "./ui/button";
             <div className="text-sm md:text-xl font-light text-zinc-400">
                 Create content using AI 10x faster
             </div>
-            <div>
+            <div className="space-y-10">
                 <Link href={isSignedIn?"/dashboard":"/sign-up"} >
                     <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
                         Start Generating For Free

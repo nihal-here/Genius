@@ -1,6 +1,7 @@
 # Genius AI SaaS Platform
 
-Welcome to Genius, your go-to platform for AI-driven creativity.
+Welcome to Genius, your go-to platform for AI-driven creativity.  
+[https://genius-puce.vercel.app/](https://genius-puce.vercel.app/).
 
 ## Introduction
 
@@ -17,6 +18,14 @@ Genius is a comprehensive AI SaaS platform designed to elevate creative workflow
 ## Deployment
 
 The Genius AI SaaS Platform is live and can be accessed at [https://genius-puce.vercel.app/](https://genius-puce.vercel.app/).
+
+## Technologies Used
+
+- **Framework:** Next.js
+- **Frontend:** React, Tailwind CSS
+- **Database:** Prisma, PostgreSQL
+- **Subscription Management:** Stripe
+- **Deployment:** Vercel
 
 ## Usage
 

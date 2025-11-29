@@ -24,6 +24,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 import { useProModal } from "@/hooks/use-pro-modal";
 import toast from "react-hot-toast";
+import { PromptLibrary } from "@/components/prompt-library";
 
 
  const CodePage =()=>{
@@ -96,32 +97,48 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         {messages.map((message)=>(
                             <div 
                             key={String(message.content)}
-                            className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg transition-all",
-                            message.role==='user' ? "bg-white/10 border border-white/10" : "bg-transparent")}
+                            className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", message.role === "user" ? "bg-white border border-black/10" : "bg-muted")}
                             >
-                            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
-                            <div className="overflow-hidden w-full">
-                                <ReactMarkdown components={{
-                                    pre: ({node, ...props}) => (
-                                        <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
-                                            <pre {...props} />
-                                        </div>
-                                    ),
-                                    code: ({node, ...props}) => (
-                                        <code className="bg-black/10 rounded-lg p-1" {...props} />
-                                    )
-                                }}
-                                className="text-sm overflow-hidden leading-7 text-zinc-100"
-                                >
-                                    {String(message.content) || ""}
-                                </ReactMarkdown>
-                            </div>
+                                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                                <div className="flex flex-col w-full overflow-hidden">
+                                    <ReactMarkdown components={{
+                                        pre: ({ node, ...props }) => (
+                                            <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                                                <pre {...props} />
+                                            </div>
+                                        ),
+                                        code: ({ node, ...props }) => (
+                                            <code className="bg-black/10 rounded-lg p-1" {...props} />
+                                        )
+                                    }} className="text-sm overflow-hidden leading-7">
+                                        {message.content as string || ""}
+                                    </ReactMarkdown>
+                                    {message.role !== "user" && (
+                                        <Button 
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(message.content as string);
+                                                toast.success("Copied to clipboard!");
+                                            }}
+                                            className="self-end mt-2 h-auto p-1 px-2 text-xs text-muted-foreground hover:text-primary"
+                                            variant="ghost"
+                                            size="sm"
+                                        >
+                                            Copy Code
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
             <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <div className="mb-4 px-4 md:px-6">
+                    <PromptLibrary 
+                        type="code" 
+                        onSelect={(prompt) => form.setValue("prompt", prompt)} 
+                    />
+                </div>
                 <Form {...form}>
                     <form  onSubmit={form.handleSubmit(onSubmit)} className="
                     rounded-full

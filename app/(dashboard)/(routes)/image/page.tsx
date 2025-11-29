@@ -39,6 +39,7 @@ import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { useProModal } from "@/hooks/use-pro-modal";
 import toast from "react-hot-toast";
+import { PromptLibrary } from "@/components/prompt-library";
 
  const ImagePage =()=>{
     const proModal=useProModal();
@@ -136,6 +137,12 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                 </div>
             </div>
             <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <div className="mb-4 px-4 md:px-6">
+                    <PromptLibrary 
+                        type="image" 
+                        onSelect={(prompt) => form.setValue("prompt", prompt)} 
+                    />
+                </div>
                 <Form {...form}>
                     <form  onSubmit={form.handleSubmit(onSubmit)} className="
                     rounded-full

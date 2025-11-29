@@ -1,9 +1,9 @@
 "use server";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
 
-import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
+import { checkApiLimit, IncreaseApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
 
 const openai = new OpenAI({
@@ -39,7 +39,7 @@ export async function generateConversation(messages: OpenAI.Chat.ChatCompletionM
     });
 
     if (!isPro) {
-      await increaseApiLimit();
+      await IncreaseApiLimit();
     }
 
     return { data: response.choices[0].message };

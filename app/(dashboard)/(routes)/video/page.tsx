@@ -1,7 +1,7 @@
 'use client'; 
 
 import { useState } from "react";
-import axios from "axios";
+import { generateVideo } from "@/actions/video";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
 
@@ -40,17 +40,24 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
     try{
          setVideo(undefined);
 
-        const response=await axios.post("api/video",values);
-        setVideo(response.data[0]);
+        const response = await generateVideo(values.prompt);
+
+        if (response.error) {
+            if (response.status === 403) {
+                proModal.onOpen();
+            } else {
+                toast.error(response.error);
+            }
+            return;
+        }
+
+        setVideo((response.data as any)[0]);
         form.reset();
 
 
     }catch(error:any){
-        if(error?.response?.status===403){
-            proModal.onOpen(); 
-        }else{
-            toast.error("Something went wrong");
-        }
+        console.log(error);
+        toast.error("Something went wrong");
     }finally{
         router.refresh();
     }

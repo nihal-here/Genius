@@ -1,16 +1,12 @@
 'use client'; 
 
 import { useState } from "react";
-import axios from "axios";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
 import OpenAI from "openai";
-
-import{zodResolver} from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "./constants";
-
 import { MessageSquare } from "lucide-react";
-
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -23,6 +19,8 @@ import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 import { useProModal } from "@/hooks/use-pro-modal";
 import { toast } from "react-hot-toast";
+
+import { generateConversation } from "@/actions/conversation";
 
  const ConversationPage =()=>{
     const proModal=useProModal();
@@ -41,25 +39,31 @@ import { toast } from "react-hot-toast";
 const isLoading=form.formState.isSubmitting;
 const onSubmit=async(values:z.infer<typeof formSchema>)=>{
     try{
-        const userMessage: OpenAI.Chat.ChatCompletionMessage = {
+        const userMessage: OpenAI.Chat.ChatCompletionMessageParam = {
             role: "user",
             content: values.prompt
           }
         const newMessages=[...messages,userMessage];
 
-        const response=await axios.post("api/conversation",{messages:newMessages});
+        const response = await generateConversation(newMessages);
+
+        if (response.error) {
+            if (response.status === 403) {
+                proModal.onOpen();
+            } else {
+                toast.error(response.error);
+            }
+            return;
+        }
             
-        setMessages((current) => [...current,userMessage,response.data]);
+        setMessages((current) => [...current,userMessage,response.data as OpenAI.Chat.ChatCompletionMessage]);
 
         form.reset();
 
 
     }catch(error:any){
-        if(error?.response?.status===403){
-            proModal.onOpen(); 
-        }else{
-            toast.error("Something went wrong");
-        }
+        console.log(error);
+        toast.error("Something went wrong");
     }finally{
         router.refresh();
     }
@@ -124,12 +128,12 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                         {messages.map((message)=>(
                             <div 
-                            key={message.content}
+                            key={String(message.content)}
                             className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg",message.role=='user'?"bg-white border border-black/10": "bg-muted")}
                             >
                             {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
                             <p className="text-sm">
-                                {message.content}
+                                {String(message.content)}
                             </p>
                             </div>
                         ))}

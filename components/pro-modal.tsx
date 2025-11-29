@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { stripeRedirect } from "@/actions/stripe";
 import { useState } from "react";
 
 import { 
@@ -72,9 +72,12 @@ export const ProModal=()=>{
     const onSubscribe=async()=>{
         try{
             setLoading(true);
-            const response=await axios.get("/api/stripe");
-
-            window.location.href=response.data.url;
+            const response = await stripeRedirect();
+            if (response.url) {
+                window.location.href = response.url;
+            } else if (response.error) {
+                toast.error(response.error);
+            }
         }catch(error){
             toast.error("Something went wrong");
         }finally{

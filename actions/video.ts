@@ -1,9 +1,9 @@
 "use server";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import Replicate from "replicate";
 
-import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
+import { checkApiLimit, IncreaseApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
 
 const replicate = new Replicate({
@@ -43,7 +43,7 @@ export async function generateVideo(prompt: string) {
     );
 
     if (!isPro) {
-      await increaseApiLimit();
+      await IncreaseApiLimit();
     }
 
     return { data: response };

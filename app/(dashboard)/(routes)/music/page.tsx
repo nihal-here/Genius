@@ -1,7 +1,7 @@
 'use client'; 
 
 import { useState } from "react";
-import axios from "axios";
+import { generateMusic } from "@/actions/music";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
 
@@ -41,18 +41,25 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
     try{
          setMusic(undefined);
 
-        const response=await axios.post("api/music",values);
-        setMusic(response.data.audio);
+        const response = await generateMusic(values.prompt);
+
+        if (response.error) {
+            if (response.status === 403) {
+                proModal.onOpen();
+            } else {
+                toast.error(response.error);
+            }
+            return;
+        }
+
+        setMusic((response.data as any).audio);
 
         form.reset();
 
 
     }catch(error:any){
-        if(error?.response?.status===403){
-            proModal.onOpen(); 
-        }else{
-            toast.error("Something went wrong");
-        }
+        console.log(error);
+        toast.error("Something went wrong");
     }finally{
         router.refresh();
     }

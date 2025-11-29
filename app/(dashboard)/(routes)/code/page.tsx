@@ -1,7 +1,7 @@
 'use client'; 
 
 import { useState } from "react";
-import axios from "axios";
+import { generateCode } from "@/actions/code";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
 import OpenAI from "openai";
@@ -43,25 +43,31 @@ import toast from "react-hot-toast";
 const isLoading=form.formState.isSubmitting;
 const onSubmit=async(values:z.infer<typeof formSchema>)=>{
     try{
-        const userMessage: OpenAI.Chat.ChatCompletionMessage = {
+        const userMessage: OpenAI.Chat.ChatCompletionMessageParam = {
             role: "user",
             content: values.prompt
           }
         const newMessages=[...messages,userMessage];
 
-        const response=await axios.post("api/code",{messages:newMessages});
+        const response = await generateCode(newMessages);
+
+        if (response.error) {
+            if (response.status === 403) {
+                proModal.onOpen();
+            } else {
+                toast.error(response.error);
+            }
+            return;
+        }
             
-        setMessages((current) => [...current,userMessage,response.data]);
+        setMessages((current) => [...current,userMessage,response.data as OpenAI.Chat.ChatCompletionMessageParam]);
 
         form.reset();
 
 
     }catch(error:any){
-        if(error?.response?.status===403){
-            proModal.onOpen(); 
-        }else{
-            toast.error("Something went wrong");
-        }
+        console.log(error);
+        toast.error("Something went wrong");
     }finally{
         router.refresh();
     }
@@ -126,7 +132,7 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                         {messages.map((message)=>(
                             <div 
-                            key={message.content}
+                            key={String(message.content)}
                             className={cn("p-5 max-w-screen-lg w-full flex items-start gap-x-2 rounded-lg",message.role==="user"?"bg-white border border-black/10": "bg-muted")}
                             >
                             {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
@@ -145,7 +151,7 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                                         }} 
                                         className="text-sm overflow-hidden leading-7"
                                 >
-                                    {message.content || " "}
+                                    {String(message.content) || " "}
                                 </ReactMarkdown>
                             </p>
                             </div>

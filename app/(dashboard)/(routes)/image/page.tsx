@@ -1,7 +1,7 @@
 'use client'; 
 
 import { useState } from "react";
-import axios from "axios";
+import { generateImage } from "@/actions/image";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
 
@@ -63,20 +63,26 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
         setImages([]);
         console.log(values)
 
-        const response=await axios.post("api/image",values); 
+        const response = await generateImage(values.prompt, values.amount, values.resolution);
 
-        const urls=response.data.map((image:{url:string})=>image.url);
+        if (response.error) {
+            if (response.status === 403) {
+                proModal.onOpen();
+            } else {
+                toast.error(response.error);
+            }
+            return;
+        }
+
+        const urls=response.data?.map((image)=>image.url).filter((url): url is string => !!url) || [];
         setImages(urls);
 
         form.reset();
  
 
     }catch(error:any){
-        if(error?.response?.status===403){
-            proModal.onOpen(); 
-        }else{
-            toast.error("Something went wrong");
-        }
+        console.log(error);
+        toast.error("Something went wrong");
     }finally{
         router.refresh();
     }

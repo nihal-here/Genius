@@ -8,20 +8,21 @@ import { Button } from "./ui/button";
  export const LandingHero = () => {
     const {isSignedIn}=useAuth();
 
-     return(
-        <div className="text-white text-center font-bold py-40 space-y-4">
-            <div className="text-4xl sm:text-5xl md:text-6xl  lg:text-7xl font-extrabold space-y-5 ">
-                <h1>
+    return(
+        <div className="text-white font-bold py-36 text-center space-y-5">
+            <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl space-y-5 font-extrabold">
+                <h1 className="tracking-tight">
                     The Best AI Tool for
                 </h1>
-                <div className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                <div className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-600 animate-pulse">
                     <TypewriterComponent 
                         options={{
-                            strings: ["Chatbot",
-                             "Image Generation",
-                             "Music Genration",
-                             "Video Generation",
-                             "Code Generation",
+                            strings: [
+                                "Chatbot.",
+                                "Photo Generation.",
+                                "Music Generation.",
+                                "Code Generation.",
+                                "Video Generation.",
                             ],
                             autoStart: true,
                             loop: true
@@ -30,17 +31,17 @@ import { Button } from "./ui/button";
                 </div>
             </div>
             <div className="text-sm md:text-xl font-light text-zinc-400">
-                Create content using AI 10x faster
+                Create content using AI 10x faster.
             </div>
-            <div className="space-y-10">
+            <div className="pt-10">
                 <Link href={isSignedIn?"/dashboard":"/sign-up"} >
-                    <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
+                    <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold shadow-[0_0_30px_-10px_rgba(168,85,247,0.7)] hover:shadow-[0_0_40px_-5px_rgba(168,85,247,1)] transition-all duration-300">
                         Start Generating For Free
                     </Button>
                 </Link>
             </div>
-            <div className="text-zinc-400  text-xs md:text-sm font-normal">
-                No credit card required
+            <div className="text-zinc-400 text-xs md:text-sm font-normal">
+                No credit card required.
             </div>
         </div>
      )

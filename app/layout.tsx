@@ -6,6 +6,7 @@ import { ModalProvider } from '@/components/modal-provider'
 import { ToasterProvider } from '@/components/toaster-provider'
 import { CrispProvider } from '@/components/crisp-provider'
 import { Analytics } from '@vercel/analytics/react';
+import { ThemeProvider } from "@/components/theme-provider"
 
 
 
@@ -23,13 +24,20 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <CrispProvider/>
       <body className={inter.className}>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
        <ModalProvider/>
        <ToasterProvider/>
       {children}
       <Analytics/>
+      </ThemeProvider>
       </body>
     </html>
     </ClerkProvider>

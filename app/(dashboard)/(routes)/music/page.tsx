@@ -9,7 +9,7 @@ import { Heading } from "@/components/heading";
 import{zodResolver} from "@hookform/resolvers/zod";
 import { formSchema } from "./constants";
 
-import { Music2, MusicIcon } from "lucide-react";
+import { Music, MusicIcon } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -66,36 +66,63 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
 }
 
     return(
-        <div>
+        <div className="h-full relative flex flex-col">
             <Heading 
                 title="Music Generation"
-                description="Turn your prompt into music"
-                icon={MusicIcon}
+                description="Turn your prompt into music."
+                icon={Music}
                 iconColor="text-emerald-500"
                 bgColor="bg-emerald-500/10"
             />
-            <div className="px-4 lg:px-8">
-                <div>
-                    <Form {...form}>
-                    <form  onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg
+            <div className="flex-1 overflow-y-auto pb-32 px-4 lg:px-8">
+                <div className="space-y-4 mt-4">
+                    {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted/50">
+                            <Loader />
+                        </div>
+                    )}
+                    {music && !isLoading &&(
+                        <div className="w-full mt-8">
+                            <audio controls className="w-full mt-8 bg-black/10 rounded-lg">
+                                <source src={music} />
+                            </audio>
+                        </div>
+                    )}
+                    {!music && !isLoading &&(
+                        <Empty label="No Music Generated"/>
+                    )}
+                </div>
+            </div>
+            <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <Form {...form}>
+                    <form  onSubmit={form.handleSubmit(onSubmit)} className="
+                    rounded-full
                     border
+                    border-zinc-700
                     w-full
-                    p-4
-                    px-3
+                    p-2
+                    px-4
                     md:px-6
-                    focus-within:shadow-sm
+                    focus-within:shadow-2xl
+                    focus-within:border-primary/50
                     grid
                     grid-cols-12
-                    gap-2">
+                    gap-2
+                    bg-secondary/10
+                    backdrop-blur-md
+                    transition-all
+                    duration-300
+                    shadow-xl
+                    ">
                     <FormField 
                         name="prompt"
                         render={({field})=>(
                             <FormItem className="col-span-12 lg:col-span-10">
-                                <FormControl className="m-0s p-0">
+                                <FormControl className="m-0 p-0">
                                      <Input className="border-0 outline-none focus-visible:ring-0
-                                     focus-visible:ring-transparent w-full"
+                                     focus-visible:ring-transparent w-full bg-transparent placeholder:text-zinc-400"
                                      disabled={isLoading}
-                                     placeholder="Create a calming beach night melody."
+                                     placeholder="Piano solo"
                                      {...field}
                                      />
                                 </FormControl>
@@ -103,32 +130,13 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                     />
                     <Button 
-                    className="col-span-12 lg:col-span-2 w-full" 
+                    className="col-span-12 lg:col-span-2 w-full rounded-full bg-gradient-to-r from-emerald-500 to-green-500 hover:opacity-90 transition" 
                     disabled={isLoading}
                     >
                         Generate
                     </Button>
                     </form>
                 </Form>
-                </div>
-                <div className="space-y-4 mt-4">
-                    <div className="flex flex-col-reverse gap-y-4">
-                        {isLoading && (
-                            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-                                <Loader />
-                            </div>
-                        )
-                        }
-                        {!music && !isLoading &&(
-                            <Empty label="No Music generated"/>
-                        )}
-                       {music && (
-                           <audio controls className="w-full mt-8">
-                            <source src={music}/>
-                        </audio>
-                       )}
-                    </div>
-                </div>
             </div>
         </div>
     );

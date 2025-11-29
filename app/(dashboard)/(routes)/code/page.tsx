@@ -74,36 +74,83 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
 }
 
     return(
-        <div>
+        <div className="h-full relative flex flex-col">
             <Heading 
                 title="Code Generation"
-                description="Generate code using descriptive text"
+                description="Generate code using descriptive text."
                 icon={Code}
                 iconColor="text-green-700"
                 bgColor="bg-green-700/10"
             />
-            <div className="px-4 lg:px-8">
-                <div>
-                    <Form {...form}>
-                    <form  onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg
+            <div className="flex-1 overflow-y-auto pb-32 px-4 lg:px-8">
+                <div className="space-y-4 mt-4">
+                    {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted/50">
+                            <Loader />
+                        </div>
+                    )}
+                    {messages.length===0 && !isLoading &&(
+                        <Empty label="No Conversations Started"/>
+                    )}
+                    <div className="flex flex-col-reverse gap-y-4">
+                        {messages.map((message)=>(
+                            <div 
+                            key={String(message.content)}
+                            className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg transition-all",
+                            message.role==='user' ? "bg-white/10 border border-white/10" : "bg-transparent")}
+                            >
+                            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
+                            <div className="overflow-hidden w-full">
+                                <ReactMarkdown components={{
+                                    pre: ({node, ...props}) => (
+                                        <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                                            <pre {...props} />
+                                        </div>
+                                    ),
+                                    code: ({node, ...props}) => (
+                                        <code className="bg-black/10 rounded-lg p-1" {...props} />
+                                    )
+                                }}
+                                className="text-sm overflow-hidden leading-7 text-zinc-100"
+                                >
+                                    {String(message.content) || ""}
+                                </ReactMarkdown>
+                            </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <Form {...form}>
+                    <form  onSubmit={form.handleSubmit(onSubmit)} className="
+                    rounded-full
                     border
+                    border-zinc-700
                     w-full
-                    p-4
-                    px-3
+                    p-2
+                    px-4
                     md:px-6
-                    focus-within:shadow-sm
+                    focus-within:shadow-2xl
+                    focus-within:border-primary/50
                     grid
                     grid-cols-12
-                    gap-2">
+                    gap-2
+                    bg-secondary/10
+                    backdrop-blur-md
+                    transition-all
+                    duration-300
+                    shadow-xl
+                    ">
                     <FormField 
                         name="prompt"
                         render={({field})=>(
                             <FormItem className="col-span-12 lg:col-span-10">
-                                <FormControl className="m-0s p-0">
+                                <FormControl className="m-0 p-0">
                                      <Input className="border-0 outline-none focus-visible:ring-0
-                                     focus-visible:ring-transparent w-full"
+                                     focus-visible:ring-transparent w-full bg-transparent placeholder:text-zinc-400"
                                      disabled={isLoading}
-                                     placeholder="Design a simple toggle button using react hooks"
+                                     placeholder="Simple toggle button using react hooks."
                                      {...field}
                                      />
                                 </FormControl>
@@ -111,53 +158,13 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                     />
                     <Button 
-                    className="col-span-12 lg:col-span-2 w-full" 
+                    className="col-span-12 lg:col-span-2 w-full rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:opacity-90 transition" 
                     disabled={isLoading}
                     >
                         Generate
                     </Button>
                     </form>
                 </Form>
-                </div>
-                <div className="space-y-4 mt-4">
-                    <div className="flex flex-col-reverse gap-y-4">
-                        {isLoading && (
-                            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-                                <Loader />
-                            </div>
-                        )
-                        }
-                        {messages.length===0 && !isLoading &&(
-                            <Empty label="No Conversations Started"/>
-                        )}
-                        {messages.map((message)=>(
-                            <div 
-                            key={String(message.content)}
-                            className={cn("p-5 max-w-screen-lg w-full flex items-start gap-x-2 rounded-lg",message.role==="user"?"bg-white border border-black/10": "bg-muted")}
-                            >
-                            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
-                            <p className="text-sm">
-                                <ReactMarkdown components={
-                                        {
-                                            pre: ({ node, ...props }) => (
-                                                <div className="overflow-x-auto w-full my-2 bg-black/10 p-2 rounded-lg ">
-                                                  <pre {...props}  />
-                                                </div>
-                                              ),
-                                              code: ({ node, ...props }) => (
-                                                <code className="inline-block bg-black/10  px-2 py-1 rounded-lg mb-2"
-                                                   {...props} />
-                                              )
-                                        }} 
-                                        className="text-sm overflow-hidden leading-7"
-                                >
-                                    {String(message.content) || " "}
-                                </ReactMarkdown>
-                            </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </div>
         </div>
     );

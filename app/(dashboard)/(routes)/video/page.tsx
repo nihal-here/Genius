@@ -8,7 +8,7 @@ import { Heading } from "@/components/heading";
 import{zodResolver} from "@hookform/resolvers/zod";
 import { formSchema } from "./constants";
 
-import { VideoIcon } from "lucide-react";
+import { FileVideo, VideoIcon } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -64,36 +64,63 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
 }
 
     return(
-        <div>
+        <div className="h-full relative flex flex-col">
             <Heading 
                 title="Video Generation"
-                description="Turn your prompt into video"
-                icon={VideoIcon}
+                description="Turn your prompt into video."
+                icon={FileVideo}
                 iconColor="text-orange-700"
                 bgColor="bg-orange-700/10"
             />
-            <div className="px-4 lg:px-8">
-                <div>
-                    <Form {...form}>
-                    <form  onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg
+            <div className="flex-1 overflow-y-auto pb-32 px-4 lg:px-8">
+                <div className="space-y-4 mt-4">
+                    {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted/50">
+                            <Loader />
+                        </div>
+                    )}
+                    {video && !isLoading &&(
+                        <div className="w-full mt-8 rounded-lg overflow-hidden border border-white/10 bg-black/20">
+                            <video controls className="w-full aspect-video rounded-lg">
+                                <source src={video} />
+                            </video>
+                        </div>
+                    )}
+                    {!video && !isLoading &&(
+                        <Empty label="No Video Generated"/>
+                    )}
+                </div>
+            </div>
+            <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <Form {...form}>
+                    <form  onSubmit={form.handleSubmit(onSubmit)} className="
+                    rounded-full
                     border
+                    border-zinc-700
                     w-full
-                    p-4
-                    px-3
+                    p-2
+                    px-4
                     md:px-6
-                    focus-within:shadow-sm
+                    focus-within:shadow-2xl
+                    focus-within:border-primary/50
                     grid
                     grid-cols-12
-                    gap-2">
+                    gap-2
+                    bg-secondary/10
+                    backdrop-blur-md
+                    transition-all
+                    duration-300
+                    shadow-xl
+                    ">
                     <FormField 
                         name="prompt"
                         render={({field})=>(
                             <FormItem className="col-span-12 lg:col-span-10">
-                                <FormControl className="m-0s p-0">
+                                <FormControl className="m-0 p-0">
                                      <Input className="border-0 outline-none focus-visible:ring-0
-                                     focus-visible:ring-transparent w-full"
+                                     focus-visible:ring-transparent w-full bg-transparent placeholder:text-zinc-400"
                                      disabled={isLoading}
-                                     placeholder="Gold  fish swimming together with a shark "
+                                     placeholder="Clown fish swimming around a coral reef"
                                      {...field}
                                      />
                                 </FormControl>
@@ -101,32 +128,13 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                     />
                     <Button 
-                    className="col-span-12 lg:col-span-2 w-full" 
+                    className="col-span-12 lg:col-span-2 w-full rounded-full bg-gradient-to-r from-orange-600 to-red-600 hover:opacity-90 transition" 
                     disabled={isLoading}
                     >
                         Generate
                     </Button>
                     </form>
                 </Form>
-                </div>
-                <div className="space-y-4 mt-4">
-                    <div className="flex flex-col-reverse gap-y-4">
-                        {isLoading && (
-                            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-                                <Loader />
-                            </div>
-                        )
-                        }
-                        {!video && !isLoading &&(
-                            <Empty label="No video generated"/>
-                        )}
-                       {video && (
-                           <video className="w-full aspect-video mt-8 rounded-lg border bg-black" controls>
-                            <source src={video}/>
-                           </video>
-                       )}
-                    </div>
-                </div>
             </div>
         </div>
     );

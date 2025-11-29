@@ -15,7 +15,7 @@ import {
     VideoIcon} from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+
 
 
 const montserrat=Montserrat({
@@ -77,25 +77,19 @@ const Sidebar = ({
 }:SidebarProps)=> {
      const pathname= usePathname();
 
-    const [isMounted, setIsMounted] = useState (false) ;
-    useEffect (() => {
-    setIsMounted (true);
-        }, []);
-    if (!isMounted) {
-        return null;
-    }
+
 
     return(
-        <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
-            <div className="px-3 py-2 flex=1">
-                <Link href="/dashboard" className="flex items-center pl-3 mb-14">
+        <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white overflow-hidden border-r border-white/10">
+            <div className="px-3 py-2 flex-1">
+                <Link href="/dashboard" className="flex items-center pl-3 mb-14 hover:opacity-75 transition">
                     <div className="relative w-8 h-8 mr-4">
                         <Image
                         fill 
                         alt="Logo"
                         src="/logo.png" />
                         </div>
-                        <h1 className={cn("text-2xl font-bold tracking-tightxl",montserrat.className)}>
+                        <h1 className={cn("text-2xl font-bold tracking-tight",montserrat.className)}>
                             Genius
                         </h1>
                 </Link>
@@ -104,17 +98,19 @@ const Sidebar = ({
                         <Link
                         href={route.href}
                         key={route.href}
-                            className={cn("text-sm group flex p-3 w-full justify-start font-medium curser-pointer hover:text-white hover:bg-white/10 rounded-lg transition",pathname===route.href?"text-white bg-white/10":"text-zinc-400")}
+                            className={cn("text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition duration-200",
+                            pathname===route.href ? "text-white bg-white/10 shadow-[0_0_30px_-10px_rgba(255,255,255,0.3)]" : "text-zinc-400"
+                            )}
                             >
                             <div className="flex items-center flex-1">
-                                <route.icon className={cn("mr-3 w-5 h-5",route.color)} />
+                                <route.icon className={cn("mr-3 w-5 h-5 transition-all group-hover:scale-110",route.color)} />
                                 {route.label}
                             </div>
                         </Link>
                     ))}
                     </div>
                 </div>
-                <div className="mt-auto">
+                <div className="mt-auto px-3">
             <FreeCounter isPro={isPro}
                 apiLimitCount={apiLimitCount} 
             />

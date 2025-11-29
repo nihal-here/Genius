@@ -25,15 +25,16 @@ export const LandingNavbar = () => {
                     src="/logo.png"
                     />
                 </div>
-                <h1 className={cn("text-2xl font-bold text-white",font.className)}>
+                <h1 className={cn("text-2xl font-bold text-white tracking-tight",font.className)}>
                     Genius
                 </h1>
             </Link>
-            <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-2">
                 <Link href={isSignedIn?"/dashboard":"/sign-up"} >
                     <Button
-                    variant="outline" className="rounded-full"
-                    >Get Started
+                    variant="outline" className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white transition"
+                    >
+                        Get Started
                     </Button>
                 </Link>
             </div>

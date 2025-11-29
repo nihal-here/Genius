@@ -70,7 +70,7 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
 }
 
     return(
-        <div>
+        <div className="h-full relative flex flex-col">
             <Heading 
                 title="Conversation"
                 description="Our most advanced AI powered chatbot"
@@ -78,26 +78,60 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                 iconColor="text-violet-500"
                 bgColor="bg-violet-500/10"
             />
-            <div className="px-4 lg:px-8">
-                <div>
-                    <Form {...form}>
-                    <form  onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg
+            <div className="flex-1 overflow-y-auto pb-32 px-4 lg:px-8">
+                <div className="space-y-4 mt-4">
+                    {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted/50">
+                            <Loader />
+                        </div>
+                    )}
+                    {messages.length===0 && !isLoading &&(
+                        <Empty label="No Conversations Started"/>
+                    )}
+                    <div className="flex flex-col-reverse gap-y-4">
+                        {messages.map((message)=>(
+                            <div 
+                            key={String(message.content)}
+                            className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg transition-all",
+                            message.role==='user' ? "bg-white/10 border border-white/10" : "bg-transparent")}
+                            >
+                            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
+                            <p className="text-sm text-zinc-100 leading-relaxed">
+                                {String(message.content)}
+                            </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="absolute bottom-0 w-full p-4 pb-10 bg-gradient-to-t from-background via-background to-transparent">
+                <Form {...form}>
+                    <form  onSubmit={form.handleSubmit(onSubmit)} className="
+                    rounded-full
                     border
+                    border-zinc-700
                     w-full
-                    p-4
-                    px-3
+                    p-2
+                    px-4
                     md:px-6
-                    focus-within:shadow-sm
+                    focus-within:shadow-2xl
+                    focus-within:border-primary/50
                     grid
                     grid-cols-12
-                    gap-2">
+                    gap-2
+                    bg-secondary/10
+                    backdrop-blur-md
+                    transition-all
+                    duration-300
+                    shadow-xl
+                    ">
                     <FormField 
                         name="prompt"
                         render={({field})=>(
                             <FormItem className="col-span-12 lg:col-span-10">
-                                <FormControl className="m-0s p-0">
+                                <FormControl className="m-0 p-0">
                                      <Input className="border-0 outline-none focus-visible:ring-0
-                                     focus-visible:ring-transparent w-full"
+                                     focus-visible:ring-transparent w-full bg-transparent placeholder:text-zinc-400"
                                      disabled={isLoading}
                                      placeholder="How do i calculate the area of a circle?"
                                      {...field}
@@ -107,38 +141,13 @@ const onSubmit=async(values:z.infer<typeof formSchema>)=>{
                         )}
                     />
                     <Button 
-                    className="col-span-12 lg:col-span-2 w-full" 
+                    className="col-span-12 lg:col-span-2 w-full rounded-full bg-gradient-to-r from-violet-600 to-pink-600 hover:opacity-90 transition" 
                     disabled={isLoading}
                     >
                         Generate
                     </Button>
                     </form>
                 </Form>
-                </div>
-                <div className="space-y-4 mt-4">
-                    <div className="flex flex-col-reverse gap-y-4">
-                        {isLoading && (
-                            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-                                <Loader />
-                            </div>
-                        )
-                        }
-                        {messages.length===0 && !isLoading &&(
-                            <Empty label="No Conversations Started"/>
-                        )}
-                        {messages.map((message)=>(
-                            <div 
-                            key={String(message.content)}
-                            className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg",message.role=='user'?"bg-white border border-black/10": "bg-muted")}
-                            >
-                            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
-                            <p className="text-sm">
-                                {String(message.content)}
-                            </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </div>
         </div>
     );

@@ -58,27 +58,25 @@ const DashboardPage = () =>{
   return (
     <div>
       <div className="mb-8 space-y-4">
-        <h2 className="text-2xl md:text-4xl font-bold text-center">Explore the power of AI</h2>
+        <h2 className="text-2xl md:text-4xl font-bold text-center text-white">Explore the power of AI</h2>
         <p className="text-muted-foreground font-light text-sm md:text-lg text-center">Interact with the smartest AI - Experience the next Revolution</p>
       </div>
-      <div className="px-4 md:px-20 lg:px-32 space-y-4 ">
+      <div className="px-4 md:px-20 lg:px-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {tools.map((tool)=>(
            <Card
            onClick={()=>router.push(tool.href)}
            key={tool.href}
-           className="p-4 border-black/5 flex items-center justify-between hover:shadow-md transition cursor-pointer"
+           className="p-4 border-white/5 bg-white/5 backdrop-blur-sm flex flex-col items-center justify-center text-center hover:shadow-2xl hover:scale-105 transition duration-300 cursor-pointer group border hover:border-primary/50 aspect-square"
            >
-            <div className="flex items-center gap-x-4">
-              <div className={cn("p-2 w-fit rounded-md",tool.bgcolor)}>
-                <tool.icon className={cn("w-8 h-8",tool.color)}/>
-              </div>
-              <div className="font-semibold">
-                {tool.label}
-              </div>
+            <div className={cn("p-4 w-fit rounded-full mb-4 bg-black/20 group-hover:bg-white/10 transition",tool.bgcolor)}>
+              <tool.icon className={cn("w-12 h-12",tool.color)}/>
             </div>
-            <ArrowRight className="w-5 h-5 "/>
-
-
+            <div className="font-bold text-lg text-white mb-2">
+              {tool.label}
+            </div>
+            <p className="text-xs text-muted-foreground">
+                Generate {tool.label.toLowerCase()} with AI
+            </p>
            </Card>
         ))}
       </div>
